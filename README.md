@@ -23,6 +23,15 @@ MultiColoredPrint :
 from niceprint import MultiColoredPrint as mcp
 mcp("Print test", color=["r", "g"])
 ```
+ProgressBar:
+    This class creates a progress bar which can be pulsed or filled
+#### Example
+```
+from niceprint import ProgressBar as pb
+progress = pb(len=10, color="green")
+progress.pulse(step=10)
+progress.fill(ms=20)
+```
 
 Installation
 -----------

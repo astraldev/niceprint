@@ -181,6 +181,57 @@ class MultiColoredPrint:
                 for ind_, wt in enumerate(tt_):
                     Print(wt, color=color[ind_], end=delimeter, lock=lock)
         pass
+        
+class ProgressBar:
+    def __init__(self, len=10, color="", bg="", char="#", **kwargs):
+        self.len = len
+        self.color = color
+        if char==" ":
+            color = ""
+        if color != "":
+            try:
+                char = eval(f"c.{color}")(char)
+            except Exception as e:
+                color = ""
+                print(e)
+        self.char = char
+        start = "["
+        stop = ']'
+        bar = f"[" + " "*len + " ]"
+        self.pg = 0
+        sys.stdout.write(u"\u001b[1000D"+bar)
+        sys.stdout.flush()
+    def fill(self, ms=10, sec=None):
+        char=self.char
+        self.len = self.len-self.pg
+        if sec is not None:
+            t = sec
+        elif ms is not None:
+            t = ms/100
+        for _ in range(self.len+1):
+            #print((len-_))
+            sleep(t)
+            #char -= (_+1)
+            bar = "[" + (char*(self.chw+_+1)) +" "*(self.len-_)
+            sys.stdout.write(u"\u001b[1000D"+bar)
+            sys.stdout.flush()
+        print()
+    def pulse(self, step=1, ms=1, sec=None):
+        if self.len <= self.pg:
+            return
+        try:
+            t = ms/100 if sec is None else sec
+            sleep(t)
+        except Exception as e:
+            Print("[ERROR] : ", e, color="r")
+        char = self.char
+        self.pg += 1*step
+        self.chw = step
+        bar = "[" + (char*(self.pg+1)) +" "*(self.len-self.pg) + "]"
+        sys.stdout.write(u"\u001b[1000D"+bar)
+        sys.stdout.flush()
+        if self.pg == self.len:
+            print()
 
 if __name__ == "__main__":
     MultiColoredPrint(
