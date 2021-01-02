@@ -159,6 +159,7 @@ class MultiColoredPrint:
     def get_colors():
         return Print.colors
     def __init__(self, *args, color: list = [''], delimeter=" ", time: list = [0.03], lock: bool = True):
+        args = [str(a) for a in args]
         if len(args) == len(color):
             for ind, text in enumerate(args, 0):
                 Print(text, color=color[ind], end=delimeter, lock=lock)
@@ -199,6 +200,7 @@ class ProgressBar:
         stop = ']'
         bar = f"[" + " "*len + " ]"
         self.pg = 0
+        self.chw = 0
         sys.stdout.write(u"\u001b[1000D"+bar)
         sys.stdout.flush()
     def fill(self, ms=10, sec=None):
