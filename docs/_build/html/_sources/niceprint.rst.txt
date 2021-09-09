@@ -1,0 +1,7 @@
+niceprint module
+================
+
+.. automodule:: niceprint
+   :members:
+   :undoc-members:
+   :show-inheritance:
