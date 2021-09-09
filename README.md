@@ -1,39 +1,33 @@
-Niceprint
----------
-This python module is used to print text 
-in a fashonable, colored and styled way
+# niceprint 
 
-Usage
------
+Description
+-----------
+This is a python package for printing text with different colors and styles. Best for printing results from CLI programs. Parts of the code is gotten from `color` package.
 
-Print :
-    This is a class which prints the given text or group of texts in a 
-    particular color and at a particular time.
-#### Example
-```
-from niceprint import Print
-Print("Print test", color="c")
-```
-
-MultiColoredPrint :
-    This is a class which prints a given text or group of 
-    texts in different colors at a particular time
-#### Example
-```
-from niceprint import MultiColoredPrint as mcp
-mcp("Print test", color=["r", "g"])
-```
-ProgressBar:
-    This class creates a progress bar which can be pulsed or filled
-#### Example
-```
-from niceprint import ProgressBar as pb
-progress = pb(len=10, color="green")
-progress.pulse(step=10)
-progress.fill(ms=20)
-```
+niceprint comes with a few other functionalities such as **SetInterval, ProgressBar, MultiColoredPrint.** and many [others](http://astraldev.github.io/niceprint#classes)
 
 Installation
------------
-For installation
-`pip install niceprint` or `pip3 install niceprint`
+-------
+```bash
+$ pip3 install niceprint
+```
+
+Examples
+---------
+```python
+from niceprint import Print
+from niceprint import MultiColoredPrint as mcp
+
+Print("Niceprint", color="c")
+
+mcp("Niceprint", color="crb")
+
+```
+
+Documentation
+-------------
+Availiable at http://astraldev.github.io/niceprint 
+
+View [changelog](CHANGELOG)
+
+
