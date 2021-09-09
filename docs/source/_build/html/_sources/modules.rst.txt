@@ -1,0 +1,7 @@
+niceprint
+=========
+
+.. toctree::
+   :maxdepth: 4
+
+   niceprint
