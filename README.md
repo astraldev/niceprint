@@ -28,6 +28,6 @@ Documentation
 -------------
 Availiable at http://astraldev.github.io/niceprint 
 
-View [changelog](CHANGELOG)
+View [changelog](CHANGELOG.md)
 
 
