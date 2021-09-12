@@ -6,7 +6,7 @@ here = pathlib.Path(__file__).parent
 os.chdir(here)
 setup(
   name="niceprint",
-  version="3.0.0",
+  version="3.1.0",
   license="GNU GPL 3",
   url="http://astraldev.github.io/niceprint",
   description="A minute package for formating output",
@@ -15,6 +15,5 @@ setup(
   author="AstralDev",
   author_email="ekureedem480@gmail.com",
   python_requires='>=3',
-  install_requires=["json"],
   py_modules=["niceprint"]
 )
