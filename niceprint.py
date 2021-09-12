@@ -11,7 +11,7 @@ from json import dumps
 k = 0
 val = 0
 
-COLORIZE_FORMAT = "\033[{:d};{:d};{:d}m{!s}\033[0m"
+_COLORIZE_FORMAT = "\033[{:d};{:d};{:d}m{!s}\033[0m"
 
 class _FgColor(Enum):
     Black   = 30
@@ -35,18 +35,6 @@ class _BgColor(Enum):
     White   = 47
     Null    = 10
 
-class Base(Enum):
-    Reset        = 0
-    Bold         = 1
-    Faint        = 2
-    Italic       = 3
-    Underline    = 4
-    BlinkSlow    = 5
-    BlinkRapid   = 6
-    ReverseVideo = 7
-    Concealed    = 8
-    CrossedOut   = 9
-    Null         = 10
 
 def _to_int(member):
     try:
@@ -61,51 +49,51 @@ def _colorize(bg, base, fg, *text):
     # All argument types must be str. 
     rtext = [str(f) for f in text]
     
-    return COLORIZE_FORMAT.format(
+    return _COLORIZE_FORMAT.format(
         _to_int(bg), _to_int(base), _to_int(fg), ''.join(rtext)
     )
 
 def black(*text):
-    return _colorize(_BgColor.Null, Base.Null, _FgColor.Black, *text)
+    return _colorize(_BgColor.Null, 10, _FgColor.Black, *text)
 
 def red(*text):
-    return _colorize(_BgColor.Null, Base.Null, _FgColor.Red, *text)
+    return _colorize(_BgColor.Null, 10, _FgColor.Red, *text)
 
 def green(*text):
-    return _colorize(_BgColor.Null, Base.Null, _FgColor.Green, *text)
+    return _colorize(_BgColor.Null, 10, _FgColor.Green, *text)
 
 def yellow(*text):
-    return _colorize(_BgColor.Null, Base.Null, _FgColor.Yellow, *text)
+    return _colorize(_BgColor.Null, 10, _FgColor.Yellow, *text)
 
 def blue(*text):
-    return _colorize(_BgColor.Null, Base.Null, _FgColor.Blue, *text)
+    return _colorize(_BgColor.Null, 10, _FgColor.Blue, *text)
 
 def magenta(*text):
-    return _colorize(_BgColor.Null, Base.Null, _FgColor.Magenta, *text)
+    return _colorize(_BgColor.Null, 10, _FgColor.Magenta, *text)
 
 def cyan(*text):
-    return _colorize(_BgColor.Null, Base.Null, _FgColor.Cyan, *text)
+    return _colorize(_BgColor.Null, 10, _FgColor.Cyan, *text)
 
 def bg_black(*text):
-    return _colorize(_BgColor.Black, Base.Null, _FgColor.Null, *text)
+    return _colorize(_BgColor.Black, 10, _FgColor.Null, *text)
 
 def bg_red(*text):
-    return _colorize(_BgColor.Red, Base.Null, _FgColor.Null, *text)
+    return _colorize(_BgColor.Red, 10, _FgColor.Null, *text)
 
 def bg_green(*text):
-    return _colorize(_BgColor.Green, Base.Null, _FgColor.Null, *text)
+    return _colorize(_BgColor.Green, 10, _FgColor.Null, *text)
 
 def bg_yellow(*text):
-    return _colorize(_BgColor.Yellow, Base.Null, _FgColor.Null, *text)
+    return _colorize(_BgColor.Yellow, 10, _FgColor.Null, *text)
 
 def bg_blue(*text):
-    return _colorize(_BgColor.Blue, Base.Null, _FgColor.Null, *text)
+    return _colorize(_BgColor.Blue, 10, _FgColor.Null, *text)
 
 def bg_magenta(*text):
-    return _colorize(_BgColor.Magenta, Base.Null, _FgColor.Null, *text)
+    return _colorize(_BgColor.Magenta, 10, _FgColor.Null, *text)
 
 def bg_cyan(*text):
-    return _colorize(_BgColor.Cyan, Base.Null, _FgColor.Null, *text)
+    return _colorize(_BgColor.Cyan, 10, _FgColor.Null, *text)
 
 def create_full_list(amount, lst, cmp = None):
     if cmp is None:
@@ -124,30 +112,23 @@ class SetInterval:
     """
     Sets an interval for functions.
     
+    Creates an instance of SetInterval.        
+    
+    :param interval: time between intervals
+    :type interval: int or float
+    :param Callable function: the function to call
+    :param int end: number of times to run
+    :param Callable callback: function to call after code run
+    :param bool show_progress: If to show a progress bar to indicate running #buggy
+    :param bool req: if to add self to the called function. usefull if function should cancel the interval
+    :param Iterable args: List of positional arguments
+    :param dict kwargs: List of named arguments
+    :rtype: None
+    :warning: Asynchronous Thread. Does not wait.
     """
 
     def __init__(self, interval:Union[int, float], function, end:int=1000, callback:Callable=None, \
                 show_progress:bool=False, req:bool=False, args:list=None, kwargs:dict=None):
-        """Creates an instance of SetInterval
-        
-        parameters
-        ----------
-        interval : Union[int, float]
-            time between intervals
-        function: Callable
-            the function to call
-        end: int
-            number of times to run
-        callback: Callable
-            function to call after code run
-        show_progress: bool
-            If to show a progress bar to indicate running #buggy
-        req: bool
-            if to add self to the called function. usefull if function should cancel the interval
-        args: Iterable
-            List of arguments
-        kwargs: dict
-            List of named arguments"""
         global k, val
         self.k = k
         self.callback = callback
@@ -164,6 +145,9 @@ class SetInterval:
         self.args = args
         self.val = val
         self.kwargs = kwargs
+    
+    def begin(self, *args):
+        "Starts the interval "
         self._interval()
 
     def _interval(self):
@@ -212,6 +196,7 @@ class SetInterval:
 
 
 class InvalidColor(Exception):
+    """Shows that the color is not accepted"""
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.msg = "No Such Color"
@@ -225,24 +210,35 @@ def bg_dummy(text, *args):
 
 
 class Print:
-    """Print Letters individualy according to given time
-    Usage
-    -----
+    """
+    Print Letters individualy according to given time
+
     >>> from niceprint import Print
     >>> Print(\"Hello\",color=\"red\",time=0.1)
-    Hello
+    
 
-    Exceptions
-    ----------
     Throws InvalidColor exception is the color
     is not in color list
 
-    Accepted colors:
-    ---------------
-    To get the accepted colors 
+
+    To get the accepted colors
+
+
     >>> from niceprint import Print
     >>> Print.get_colors()
+
+    Prints any amount of text with the given color and background.
+
+    :param Iterable text: Items to print out. Can be anything iterable
+    :param str fg: Foreground color
+    :param str bg: Background color
+    :param bool lock: If lock is true, there will be no access to the console till the printing is over.
+    :param str end: Character to end with
+    :param bool format: If format is true, any item in @param 'text' that is a dict, will be formated with json.dumps with indent of 2
+    :raises InvalidColor: If color is not in the color list
+    
     """
+
     colors = ['red', 'green', 'blue', 'magenta',
               'black', 'yellow', "cyan"]
 
@@ -264,6 +260,7 @@ class Print:
             oc = [cl[0] for cl in Print.colors]
             Print.colors[4] = "black"
             return Print.colors[oc.index(c)]
+        return "dummy"
         
 
     def _get_text(self):
@@ -284,6 +281,7 @@ class Print:
 
     def _print(self, *args):
         self.inter = SetInterval(self.time, self._get_text, len(self.text))
+        self.inter.begin()
 
     def _locking_print(self):
         for i, t in enumerate(self.text, 0):
@@ -298,21 +296,7 @@ class Print:
                 raise TimeoutError
 
     def __init__(self, *text, fg=None, bg=None, time=0.03, lock=True, end="\n", format=False):
-        """Prints any amount of text with the given color and background.
-            parameters
-            ----------
-            text: Iterable
-                Items to print out. Can be anything
-            fg: str
-                Foreground color
-            bg: str
-                Background color
-            lock: bool
-                If lock is true, there will be no access to the console till the printing is over.
-            end: str
-                Character to end with
-            format: bool
-                If format is true, any item in @param 'text' that is a dict, will be formated with json.dumps with indent of 2"""
+
         for ind, content in enumerate(text, 0):
             self.i = 0
             if type(content) is dict or type(content) is list and format:
@@ -338,37 +322,29 @@ class Print:
 
 class MultiColoredPrint:
     """
-    MultiColoredPrint
-    ----------------------
     Prints words or text individually according to the given time and color
-    
-    Usage
-    -------
+
     >>> from niceprint import MultiColoredPrint as MP
     >>> text = \"Multiple Text\"
     >>> MP(text, color=[\'c\', 'g'])
+
+    Prints multiple text with multiple colors, different backgrounds and a special delimiter after each color. 
+
+    :param Iterable args: Items to print
+    :param str color: Foreground color
+    :param str bg: Background color
+    :param str delimiter: Character to print out after every item
+    :param time: Time for each item
+    :type time: int or float
+    :param bool lock: If lock is true, there will be no access to the console till the printing is over.
+    :raises InvalidColor: If color is invalid
     """
     @staticmethod
     def get_colors():
-        "Returns all the accepted colors."
+        """Returns all the accepted colors."""
         return Print.colors
 
     def __init__(self, *args, color: Iterable = "", bg: Iterable = "", delimiter=" ", time = 0, lock: bool = True):
-        """ Prints multiple text with multiple colors, different backgrounds and a special delimiter after each color. 
-            parameters
-            ----------
-            args: Iterable
-                Items to print
-            color: str
-                Foreground color
-            bg: str
-                Background color
-            delimiter: str
-                Character to print out after every item
-            time: int | float
-                Time for each item
-            lock: bool
-                If lock is true, there will be no access to the console till the printing is over."""
         args = [str(x) for x in args]
         color = list(color)
         color.reverse()
@@ -422,6 +398,20 @@ class MultiColoredPrint:
             print()
         
 class ProgressBar:
+    """Creates a progress bar with the given length, color, background and character.
+    
+    >>> from niceprint import ProgressBar as pb
+    >>> progress = pb(color='c', bg='k')
+    >>> progress.fill(ms=10)
+    [#         ]
+
+    :param int len: Length of progress bar
+    :param str color: Foreground color
+    :param str bg: Background Color
+    :param str char: Character in bar
+    :raises InvalidColor: If color is invalid
+
+    """
     def _process_len(self, *args):
         self.diff = 1
         if self.len > 20:
@@ -429,23 +419,6 @@ class ProgressBar:
             self.len = 20
 
     def __init__(self, len=10, color="", bg="", char="#", **kwargs):
-        """Creates a progress bar with the given length, color, background and character.
-        >>> from niceprint import ProgressBar as pb
-        >>> progress = pb(color='c', bg='k')
-        >>> progress.fill(ms=10)
-        [#         ]
-        parameters
-        ----------
-        len: int
-            Length of progress bar
-        color: str
-            Foreground color
-        bg: str
-            Background Color
-        char: str
-            Character in bar
-        """
-    
         self.len = len
         self._old_len = len
         self._process_len()
@@ -488,17 +461,17 @@ class ProgressBar:
         sys.stdout.flush()
         
     def set_len(self, len):
-        "Set the length of the progress bar"
+        """Sets the length of the progress bar"""
         self.len = len
         self.pulse()
     
     def clean_up(self, *args):
-        "Cleans the line it's on"
+        """Cleans the line it's on"""
         sys.stdout.write(u"\u001b[10000000000D")
         sys.stdout.flush()
     
     def empty(self, *args):
-        "Empties the progress bar"
+        """Empties the progress bar"""
         self.pg = 0
         self.chw = 0
         
@@ -513,15 +486,11 @@ class ProgressBar:
         >>> progress.fill(text = ['Text 1', 'Text 2'])
         [# ] Text 1
         [##] Text 2
-
-        parameters
-        ----------
-        ms: int 
-            Time between each pulse in milliseconds
-        sec: int | float
-            Time between each pulse in seconds
-        text: str | list | Tuple
-            Items to print at the end of the bar
+        :param int ms: Time between each pulse in milliseconds
+        :param sec:Time between each pulse in seconds
+        :type sec: int or float
+        :param text: Items to print at the end of the bar
+        :type text: str or list or tuple
 
         """
         char=self.char
@@ -576,14 +545,11 @@ class ProgressBar:
 
     def pulse(self, step=1, ms=1, sec=None, text: str = ""):
         """Increase the progress bar by amount of step and with a text
-        parameters
-        ----------
-        ms: int 
-            Time between each pulse in milliseconds
-        sec: int | float
-            Time between each pulse in seconds
-        text: str 
-            String to print at the end of the bar
+        :param int ms: Time between each pulse in milliseconds
+        :param sec:Time between each pulse in seconds
+        :type sec: int or float
+        :param str text: Items to print at the end of the bar
+        
         """
         if step > 1:
             self.len = self._old_len*2
@@ -608,23 +574,23 @@ class ProgressBar:
             print()
 
 class Spinner:
+    """Creates a spinner
+
+    >>> from niceprint import Spinner
+    >>> sp = Spinner()
+    >>> sp.rotate()
+
+    :param str fg: Foreground color
+    :param str bg: Background color
+    :raises InvalidColor: If color is not accepted
+    
+    """
+
     def __del__(self, *args):
         print()
 
     def __init__(self, fg="c", bg = "", *args):
-        """Creates a spinner
-        >>> from niceprint import Spinner
-        >>> sp = Spinner()
-        >>> sp.rotate()
 
-        parameters
-        ----------
-        fg: str
-            Foreground color
-        bg: str
-            Background color
-        
-        """
         self.color = Print._process_color(fg)
         self.bg = Print._process_color(bg)
         self._chars = [" | ", " / ", " -- ", " \\ "]
@@ -638,22 +604,20 @@ class Spinner:
         self._index += 1
         return ch
 
-    def spin(self, *args):
-        "Turns the spinner 1 step"
+    def spin(self, text="", *args):
+        """Turns the spinner 1 step"""
         sys.stdout.write(u"\u001b[10000D"+" "*100)
-        sys.stdout.write(u"\u001b[10000D" + self._get_char())
+        sys.stdout.write(u"\u001b[10000D" + self._get_char() +" "+ str(text))
         sys.stdout.flush()
 
     def rotate(self, times: int = 5, time: int = 0.1, text: Union[str, list] = ""):
         """Rotates the spiner N(times) with a time interval of T(time)
-        parameters
-        ----------
-        times: int 
-            Times to rotate
-        time: int | float
-            Time between each turn in seconds
-        text: str | list | Tuple
-            Items to print at the end of the bar
+
+        :param int times: Times to rotate
+        :param time: Time between each turn in seconds
+        :type time: int or float
+        :param text: Items to print at the end of the bar
+        :type text: str or list or tuple
         """
         
         for _ in range(times):
@@ -674,22 +638,21 @@ class Spinner:
         sys.stdout.flush()
 
 class Percentage:
+    """Creates a percentage class
+
+    >>> from niceprint import Percentage
+    >>> pg = Percentage(10)
+    >>> pg.tick()
+    0%
+    >>> pg.fill(text = ['Starting...', 'Almost Done', 'Just a sec..'])
+
+    :param int max: Maximum number
+    :param str fg: Foreground color
+    :param str bg: Background color
+    :raises InvalidColor: If color is not accepted
+    """
     def __init__(self,max = 100, fg="", bg=""):
-        """Creates a percentage class
-        >>> from niceprint import Percentage
-        >>> pg = Percentage(10)
-        >>> pg.tick()
-        0%
-        >>> pg.fill(text = ['Starting...', 'Almost Done', 'Just a sec..'])
-        parameters
-        ----------
-        max: int
-            Maximum number
-        fg: str
-            Foreground color
-        bg: str
-            Background color
-        """
+        
         self.fg = Print._process_color(fg)
         self.bg = Print._process_color(bg)
         self.max = max
@@ -699,7 +662,7 @@ class Percentage:
         return eval(f"bg_{self.bg}")(eval(f"{self.fg}")(str(self.start)+"%")) + " "
 
     def tick(self, text = ""):
-        "Increases the percentage value by 1 with an optional text at the end"
+        """Increases the percentage value by 1 with an optional text at the end"""
         sys.stdout.write(u"\u001b[10000D"+" "*100)
         sys.stdout.write(u"\u001b[10000D"+self._get_point()+str(text))
         sys.stdout.flush()
@@ -707,13 +670,13 @@ class Percentage:
     
     def fill(self, time: Union[int, float] = 0, text: Union[str, list] = ""):
         """Increases the percentage value till the end with multiple or single text
-        parameters
-        ----------
-        time: int | float
-            Time between each increment in seconds
-        text: str | list | Tuple
-            Items to print at the end of the bar
-            """
+        
+        :param time: Time between each increment in seconds
+        :type time: int or float
+        :param text: Items to print at the end of the bar
+        :type text: str or list or Tuple
+        :rtype: None
+        """
         if type(text) is list:
             text = create_full_list(self.max - self.start, text)
 
@@ -733,6 +696,22 @@ class Percentage:
                 sleep(time)
     def __del__(self, *args):
         print()
+
+def get_availiable_colors():
+    "Returns availiable colors"
+    return Print.colors
+    
+def color_is_valid(color):
+    """Checks if color is valid and returns color
+
+    :param str color: Color to check
+    :rtype: str or False
+    """
+    res = Print._process_color(color)
+    if res == "dummy" or res == "" or res is None: 
+        return False
+    else: 
+        return res
 
 if __name__ == "__main__":
     MultiColoredPrint("Multi Colored Print", color='cmb', delimiter="")
