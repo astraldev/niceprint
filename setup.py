@@ -6,7 +6,7 @@ here = pathlib.Path(__file__).parent
 os.chdir(here)
 setup(
   name="niceprint",
-  version="3.2.0",
+  version="3.3.0",
   license="GNU GPL 3",
   url="http://astraldev.github.io/niceprint",
   description="A minute package for formating output",
