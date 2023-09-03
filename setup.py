@@ -6,7 +6,7 @@ here = pathlib.Path(__file__).parent
 os.chdir(here)
 setup(
   name="niceprint",
-  version="3.3.0",
+  version="3.3.1",
   license="MIT",
   url="https://niceprint.readthedocs.io/en/latest/",
   description="A minute package for formating output",
