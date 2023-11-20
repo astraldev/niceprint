@@ -600,7 +600,7 @@ class Spinner:
     def _get_char(self, *args):
         if self._index > len(self._chars)-1:
             self._index = 0
-        ch = eval(f"bg_{self.bg}")(eval(f"{self.color}")(self._chars[self.index]))
+        ch = eval(f"bg_{self.bg}")(eval(f"{self.color}")(self._chars[self._index]))
         self._index += 1
         return ch
 
