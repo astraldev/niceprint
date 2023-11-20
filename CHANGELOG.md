@@ -1,3 +1,8 @@
+3.4.0
+===== 
+  * Maintenance bump
+  * Fix spinner class issue
+
 3.0.0 
 =====
   * Readjusted all classes

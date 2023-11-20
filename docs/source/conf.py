@@ -18,11 +18,11 @@ sys.path.insert(0, os.path.abspath('../../'))
 # -- Project information -----------------------------------------------------
 
 project = 'niceprint'
-copyright = '2021, AstralDev'
+copyright = '2023, AstralDev'
 author = 'AstralDev'
 
 # The full version, including alpha/beta/rc tags
-release = '3.3.0'
+release = '3.4.0'
 
 
 # -- General configuration ---------------------------------------------------
